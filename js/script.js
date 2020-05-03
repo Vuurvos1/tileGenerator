@@ -1,20 +1,11 @@
-// window.addEventListener("DOMContentLoaded", function () {
-//     var image = document.getElementById("tile");
-//     var canvas = document.createElement("canvas");
-//     document.body.appendChild(canvas);
-
-
-//     var context = canvas.getContext("2d");
-
-//     context.drawImage(image, 0, 0);
-// });
 let str = window.location.search;
 str = str.slice(1);
 str = str.replace(/%20/g, ' ');
 console.log(str);
 
-const fontSize = 60;
-// zoals moeder zeurt, zeurt ze overal
+const fontSize = 72;
+const font = 'Marck Script';
+const lineHeight = fontSize + 6;
 
 const textSize = document.querySelector('#measureText');
 const canvas = document.getElementById('canvas');
@@ -23,64 +14,71 @@ const image = document.getElementById('tile');
 
 textSize.innerHTML = str;
 textSize.style.fontSize = `${fontSize}px`;
-textSize.style.fontFamily = 'Serif';
+textSize.style.fontFamily = font;
 
 canvas.width = image.width;
 canvas.height = image.height;
 
-image.addEventListener('load', () => {
-    ctx.drawImage(image, 0, 0);
+const maxWidth = 540;
 
-    ctx.font = `bold ${fontSize}px Serif`;
+let bgTile = new Image();
+bgTile.src = 'img/Blauw-omranding.jpg';
 
+bgTile.onload = function () {
+    ctx.drawImage(this, 0, 0, this.width, this.height);
+    ctx.font = `${fontSize}px ${font}`;
     ctx.fillStyle = '#0f1b65';
-    ctx.fillText(str, (image.width / 2 - textSize.offsetWidth / 2), (image.height / 2 + textSize.offsetHeight / 4));
+    ctx.textBaseline = 'baseline';
 
+    //filling text on tile
+    let words = str.split(' ');
+    let line = '';
+    console.log(words);
 
-    // Debug lines
-    ctx.fillStyle = "red";
-    ctx.beginPath();
-    ctx.moveTo(400, 0);
-    ctx.lineTo(400, 800);
-    ctx.stroke();
+    let lineAmount = 0;
 
-    ctx.beginPath();
-    ctx.moveTo(0, 400);
-    ctx.lineTo(800, 400);
-    ctx.stroke();
-});
+    for (let i = 0; i < words.length; i++) {
+        let testLine = line + words[i] + ' ';
 
+        textSize.innerHTML = testLine;
+        let testWidth = textSize.offsetWidth;
 
+        if (testWidth > maxWidth && i > 0) {
+            line = words[i] + ' ';
+            lineAmount++;
+        } else {
+            line = testLine;
+        }
+    }
 
-// function wrapText(context, text, x, y, maxWidth, lineHeight) {
-//     let words = text.split(' ');
-//     let line = '';
+    let pHeight = lineAmount * lineHeight;
+    let startX = 0;
+    let startY = canvas.height / 2 - pHeight / 4;
 
-//     for(let n = 0; n < words.length; n++) {
-//       let testLine = line + words[n] + ' ';
-//       let metrics = context.measureText(testLine);
-//       let testWidth = metrics.width;
-//       if (testWidth > maxWidth && n > 0) {
-//         context.fillText(line, x, y);
-//         line = words[n] + ' ';
-//         y += lineHeight;
-//       }
-//       else {
-//         line = testLine;
-//       }
-//     }
-//     context.fillText(line, x, y);
-//   }
+    words = str.split(' ');
+    line = '';
 
-//   let canvas = document.getElementById('myCanvas');
-//   let context = canvas.getContext('2d');
-//   let maxWidth = 400;
-//   let lineHeight = 25;
-//   let x = (canvas.width - maxWidth) / 2;
-//   let y = 60;
-//   let text = 'All the world \'s a stage, and all the men and women merely players. They have their exits and their entrances; And one man in his time plays many parts.';
+    for (let i = 0; i < words.length; i++) {
+        let testLine = line + words[i] + ' ';
 
-//   context.font = '16pt Calibri';
-//   context.fillStyle = '#333';
+        textSize.innerHTML = testLine;
+        let testWidth = textSize.offsetWidth;
+        startX = canvas.width / 2 - testWidth / 2;
 
-//   wrapText(context, text, x, y, maxWidth, lineHeight);
+        if (testWidth > maxWidth && i > 0) {
+            textSize.innerHTML = line;
+            let width = textSize.offsetWidth;
+            startX = canvas.width / 2 - width / 2;
+            ctx.fillText(line, startX, startY);
+            line = words[i] + ' ';
+            startY += lineHeight;
+        } else {
+            line = testLine;
+        }
+    }
+
+    textSize.innerHTML = line;
+    let width = textSize.offsetWidth;
+    startX = canvas.width / 2 - width / 2;
+    ctx.fillText(line, startX, startY);
+}

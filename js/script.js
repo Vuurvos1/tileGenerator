@@ -26,6 +26,7 @@ bgTile.onload = function () {
 
     const ctx = canvas.getContext('2d');
 
+    // draw bg and setup text 
     ctx.drawImage(this, 0, 0, this.width, this.height);
     ctx.font = `${fontSize}px ${font}`;
     ctx.fillStyle = '#0f1b65';
@@ -89,6 +90,6 @@ bgTile.onload = function () {
 function convertCanvasToImage(canvas) {
     let image = new Image();
     image.src = canvas.toDataURL("image/png");
-    document.body.appendChild(image)
-    return image;
+    image.className = 'generatedTile';
+    document.querySelector('main').appendChild(image);
 }

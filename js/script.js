@@ -1,23 +1,17 @@
 let str = window.location.search;
 str = str.slice(1);
 str = str.replace(/%20/g, ' ');
-console.log(str);
 
 const fontSize = 72;
 const font = 'Marck Script';
 const lineHeight = fontSize + 6;
 
 const textSize = document.querySelector('#measureText');
-const canvas = document.getElementById('canvas');
-const ctx = canvas.getContext('2d');
 const image = document.getElementById('tile');
 
 textSize.innerHTML = str;
 textSize.style.fontSize = `${fontSize}px`;
 textSize.style.fontFamily = font;
-
-canvas.width = image.width;
-canvas.height = image.height;
 
 const maxWidth = 540;
 
@@ -25,6 +19,13 @@ let bgTile = new Image();
 bgTile.src = 'img/Blauw-omranding.jpg';
 
 bgTile.onload = function () {
+    // create canvas
+    let canvas = document.createElement('canvas');
+    canvas.width = image.width;
+    canvas.height = image.height;
+
+    const ctx = canvas.getContext('2d');
+
     ctx.drawImage(this, 0, 0, this.width, this.height);
     ctx.font = `${fontSize}px ${font}`;
     ctx.fillStyle = '#0f1b65';
@@ -33,7 +34,6 @@ bgTile.onload = function () {
     //filling text on tile
     let words = str.split(' ');
     let line = '';
-    console.log(words);
 
     let lineAmount = 0;
 
@@ -81,4 +81,14 @@ bgTile.onload = function () {
     let width = textSize.offsetWidth;
     startX = canvas.width / 2 - width / 2;
     ctx.fillText(line, startX, startY);
+
+    // convert the canvas to an image
+    convertCanvasToImage(canvas)
+}
+
+function convertCanvasToImage(canvas) {
+    let image = new Image();
+    image.src = canvas.toDataURL("image/png");
+    document.body.appendChild(image)
+    return image;
 }

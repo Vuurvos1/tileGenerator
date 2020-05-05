@@ -6,6 +6,7 @@
 }
 
 #measureText {
+    position: absolute;
     visibility: hidden;
     width: fit-content;
 }

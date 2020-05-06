@@ -1,6 +1,7 @@
 let str = window.location.search;
+
 str = str.slice(1);
-str = str.replace(/%20/g, ' ');
+str = decodeURI(str);
 
 const fontSize = 72;
 const font = 'Marck Script';
@@ -27,7 +28,7 @@ bgTile.onload = function () {
     const ctx = canvas.getContext('2d');
 
     // draw bg and setup text 
-    ctx.drawImage(this, 0, 0, this.width, this.height);
+    ctx.drawImage(bgTile, 0, 0);
     ctx.font = `${fontSize}px ${font}`;
     ctx.fillStyle = '#0f1b65';
     ctx.textBaseline = 'baseline';

@@ -33,7 +33,7 @@ bgTile.onload = function () {
     ctx.fillStyle = '#0f1b65';
     ctx.textBaseline = 'baseline';
 
-    //filling text on tile
+    // filling text on tile
     let words = str.split(' ');
     let line = '';
 
@@ -53,9 +53,8 @@ bgTile.onload = function () {
         }
     }
 
-    let pHeight = lineAmount * lineHeight;
     let startX = 0;
-    let startY = canvas.height / 2 - pHeight / 4;
+    let startY = canvas.height / 2 - lineAmount * lineHeight / 2 + 20;
 
     words = str.split(' ');
     line = '';
@@ -86,11 +85,32 @@ bgTile.onload = function () {
 
     // convert the canvas to an image
     convertCanvasToImage(canvas)
+
+    // add copy to image
+    const tile = document.querySelector('.generatedTile');
+
+    tile.addEventListener('click', async () => {
+        console.log('tile clicked');
+
+        try {
+            const imgURL = tile.src;
+            const data = await fetch(imgURL);
+            const blob = await data.blob();
+            await navigator.clipboard.write([
+              new ClipboardItem({
+                [blob.type]: blob
+              })
+            ]);
+            console.log('Image copied.');
+          } catch(err) {
+            console.error(err.name, err.message);
+          }
+    });
 }
 
 function convertCanvasToImage(canvas) {
     let image = new Image();
     image.src = canvas.toDataURL("image/png");
     image.className = 'generatedTile';
-    document.querySelector('main').appendChild(image);
+    document.querySelector('.tooltip').appendChild(image);
 }
